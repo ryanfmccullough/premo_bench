@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this split or these scoring settings, please cite the preprint."
+title: "PreMo-Bench: split and scoring settings"
+authors:
+  - family-names: McCullough
+    given-names: Ryan F.
+    orcid: "https://orcid.org/0009-0005-4107-1408"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Early warning of late-onset sepsis at a fixed alarm budget: a benchmark of prediction models in 3,829 very-low-birth-weight infants from four NICUs"
+  authors:
+    - family-names: McCullough
+      given-names: Ryan F.
+  journal: "medRxiv"
+  year: 2026

@@ -1,0 +1,86 @@
+# PreMo-Bench v1: outcome rules and scoring settings. Times are hours of age.
+# The preprint's Methods and Supplementary File 1 give the full definitions.
+
+scorer:
+  package: alert_metrics
+  repository: https://github.com/ryanfmccullough/alert_metrics
+  commit: d3eaf3f7d2eeb97d60ae3d90198647449093259b
+
+windows:
+  length_min: 10            # non-overlapping 10-minute windows, each scored from data up to its end
+  max_missing_frac: 0.5     # a window missing more than half its samples on either channel is not scored and cannot alarm
+  hr_range_bpm: [40, 250]   # outside this range (and zero) is missing
+  spo2_range_pct: [40, 100] # outside this range (and zero) is missing
+
+surveillance:
+  min_age_h: 72             # nothing before 72 h of age is scored
+  start: later of min_age_h and the end of the infant's first monitor window
+  end: discharge, transfer or death
+  post_event_censor_h: 168  # the 168 h after each episode of the task are not scored
+  monitored_time: the part of the eligible surveillance period covered by scored windows, gaps under 1 h bridged
+  monitored_episode: an episode with a scored window in its warning window
+  analyses:
+    headline: monitored time and monitored episodes
+    all_events: every evaluable episode
+
+tasks:
+  sepsis:
+    primary_rule: treated_infection
+    definition: >-
+      Blood-culture evaluations for suspected sepsis or NEC after 72 h of age, timed at the
+      culture. A repeat culture on antibiotics never counts. An evaluation qualifies when the
+      culture is positive and its diagnosis is anything other than a contaminant, or when the
+      culture is negative with at least 5 days of intravenous antibiotics and a final diagnosis
+      of clinical sepsis, urinary tract infection, pneumonia, meningitis or sepsis ruled out.
+    variants:
+      culture_positive: positive, non-contaminant culture
+      any_evaluation: every evaluation other than a repeat culture on antibiotics
+      exclude_hero_prompted: the primary rule without evaluations prompted by a HeRO score
+    episode_window_h: 168     # evaluations within 168 h of an episode's first evaluation belong to that episode
+    horizon_h: 24
+  nec:
+    primary_rule: nec_diagnosis
+    definition: NEC recorded as the event diagnosis of an evaluation; spontaneous intestinal perforation excluded
+    episode_window_h: 168
+    horizon_h: 24
+  intubation:
+    primary_rule: dataset_rule
+    definition: >-
+      Unplanned intubation by the dataset's rule: 3 to 120 days of age, at least 24 h of
+      ventilation after, at least 72 h since the previous extubation; surfactant-only and
+      surgery or procedure indications excluded.
+    sites: [1, 4]             # the only sites with qualifying events; cohort, observation and burden restricted to them
+    episode_window_h: 72
+    horizon_h: 24
+  mortality:
+    primary_rule: death
+    definition: in-hospital death, timed at discharge
+    horizon_h: 168
+    horizon_sensitivity_h: [24]
+
+alert_rule:
+  persistence_windows: [1, 3]      # consecutive windows above threshold before an alarm
+  refractory_h: [0, 6, 12, 24]     # no further alarm for this long after an alarm
+
+budgets:
+  unit: alerts per 100 infant-days, pooled over monitored time
+  values: [1, 2, 5, 10, 20, 50]
+  operating_point: the lowest threshold whose burden on the selection infants fits the budget
+
+endpoints:
+  detection: share of episodes with an alarm in the warning window (the horizon before the episode)
+  detection_6h: share of episodes with an alarm in the warning window at least 6 h before the episode
+  warning_time: hours from the first alarm in the warning window to the episode, median over detected episodes
+  ppv: share of alarms followed by an episode within 24 h
+  frontier: the best median warning time at each budget and recall level
+  recall_levels: [0.5, 0.7, 0.8, 0.9]
+  selection_rule: >-
+    On the selection infants, within the budget: the highest detection, then detection at
+    least 6 h ahead, then warning time, then burden.
+
+comparators:
+  random: a random score through the same alert rules and budgets
+  baseline_risk: a model on birth characteristics, demographics and postnatal age (ten covariates)
+
+uncertainty:
+  bootstrap: infant-level resamples, paired across configurations

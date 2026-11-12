@@ -23,7 +23,7 @@ The test labels are public, so the protocol rests on the user, as for other publ
 
 ## Citation
 
-McCullough RF. Early warning of late-onset sepsis at a fixed alarm budget: a benchmark of prediction models in 3,829 very-low-birth-weight infants from four NICUs. medRxiv preprint, 2026. See `CITATION.cff`.
+McCullough RF. Early warning of late-onset sepsis at a fixed alarm budget: a benchmark of prediction models in 3,829 very-low-birth-weight infants from four NICUs. Preprint, Zenodo, 2026. doi:10.5281/zenodo.24173152. See `CITATION.cff`.
 
 Contains information from PreMo (UVA Dataverse, doi:10.18130/V3/KCBTMS), made available under the ODC Attribution License.
 

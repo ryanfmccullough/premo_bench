@@ -12,5 +12,10 @@ preferred-citation:
   authors:
     - family-names: McCullough
       given-names: Ryan F.
-  journal: "medRxiv"
+      orcid: "https://orcid.org/0009-0005-4107-1408"
+  status: preprint
+  publisher:
+    name: "Zenodo"
+  doi: "10.5281/zenodo.24173152"
+  url: "https://doi.org/10.5281/zenodo.24173152"
   year: 2026
